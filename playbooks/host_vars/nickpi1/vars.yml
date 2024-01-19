@@ -1,0 +1,31 @@
+ansible_host: "{{ vault_ansible_host }}"
+ansible_port: "{{ vault_ansible_port }}"
+
+authorized_keys:
+  - key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMNxxAEcT71BAXlVhmi76gjI26BkXwjAgcLaPLIMI+i8 dmiller
+    user: ubuntu
+    state: present
+  - key: ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPUgzXYNTvTCcUHjzdXvy2LZA6YFZKrHrfsse3ipP2ldbhnmU/Io9I/lUligmdaCFktcxwgzZRYawWJI1IsUnZA= dmiller
+    user: ubuntu
+    state: present
+  - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQChNryHWkasg7O7YLfLSffWjrP+e6eAt5olYIPgBCeqBgPHYK3sJkAo/UHuJ1SQA22qMQlHI/2m2chASZ7tbbkaBEkWlBlbAQpwleuJE0WBN8hJd49dJToW9d6q6hNwq9bmnlA/VTkzsLAqpSEANnO28WMhHI+Upn924L4lC4tVJQmSUPm8ENgU5RVW9EcSkfIBPrIdFW0zqxPEFzZXlaOqxmbOvgS4qWirjHe4PXC1Z8DeYlK9DSTM/KGX0pz8Jgz0shKwxDpdn/j36KP1jlygwrWmnDXuWuMuU44HjMZzA3A9XKuHqiROrv1K0A4M1t5DN/UbWSNQBhQOWdica2Qaek2+dUQ5m5bgYw7sSTW5Oz/jvWU71NdFhmN9eXCJukiN7UwznecnOHf0O/Si5fFf6iJzLjHELi1JKzVLvADyZTlaxmZB82MmveB99eArOUquaeO4rOHugmOVosW/Gg4wj1j19gFy0E+yVuP01tg999YF2ST8l6Z81w2xBrZYKKw+tgQlm/WbxkzRxnumTx7JH/AddFTZvTADQB11DRySmrWBKC4QCGo8+8SdwitHt6WzDZAuOqYPK+mtMtGY3TKGazRRUvCKVTALamJWjbZcizQGj3PqfVr8+wB/+TzsUU9vJPPo9skZrYHwom/3Wu1TlAAaYd8hTriqGK7gzm1CNw== dmiller
+    user: ubuntu
+    state: present
+  - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQD2K8k2ooTb4hs2v0CMY6uKjGv4TJh6PrjYtncUS5fTx17WgzMAuqhu7sv+/O2zffQIXXax206fZpwC4rBasVs+7/P96DTM/TtFaIs7Uz6SKGt+JFje/AqxYNv6GmwI+B6OAnKRa0isqRyEb6t+tR0cL1eqrxdgwGnyLQxyOFWmZP5onE7Is0ys2UWrGEPvgCJA8Gk9UY0VQLF+2Ca+PiEGOSVxvy6yGuJTnbaZYkDrfRIDhtXx2FmE9z/WhOYBmGWE00ChV7mvxzx/Spx5+wjlVsGapJhfPWd3ZDA9mxE/F5C5RRlhwFZwv/U3y+yV+vH99s9IDY9GpM8y0SftvtDiEWf+qorlF4shIQJtzJhRgltTCvnzyTBTm9Kf0JnDehytSIoIBUZiG4x/hq/vPd5+2S7SpUlQQ7GC3wNLMuvfSiqGURe5FUGm38F8zDLRr9TQEyMIH3cTu8nxXGHligGDfVoFVkDg5LJfFFn+ls4YWqSS0rG6ga9GLQxUuZIvO1s= nick@mbp.local
+    user: ubuntu
+    state: present
+
+additional_docker_users:
+  - ubuntu
+docker_compose_definition: "{{ vault_docker_compose_definition }}"
+
+lightdm_autologin_user: ubuntu
+lightdm_xorg_create_video_dummy: yes
+
+sudoers:
+  - user: ubuntu
+    passwordless: true
+
+project_files: []
+#  - src: "vault/{{ inventory_hostname }}/var/docker/"
+#    dest: /var/docker/

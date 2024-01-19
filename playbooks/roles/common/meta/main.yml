@@ -1,0 +1,3 @@
+dependencies:
+  - role: generic/telegraf
+  - role: generic/telegraf-syslog

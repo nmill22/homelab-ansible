@@ -1,0 +1,17 @@
+--index-url https://pypi.python.org/simple
+
+ansible
+black
+chardet  # implicitly required by python-debian
+click
+cryptography
+dnspython
+jinja2
+keyring
+paramiko
+passlib
+python-debian
+pyyaml
+requests[security]
+semantic-version
+websocket-client

@@ -1,0 +1,17 @@
+[raspberry-pi]
+nickpi1
+
+[x11vnc]
+nickpi1
+
+[tailscale]
+nickpi1
+
+[tailscale:vars]
+create_cloudflare_ipv4_dns_record=yes
+
+[docker]
+nickpi1
+
+[project-files]
+nickpi1

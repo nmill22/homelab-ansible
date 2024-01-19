@@ -1,0 +1,6 @@
+---
+roles:
+  - src: geerlingguy.docker
+    name: galaxy/docker
+  - src: artis3n.tailscale
+    name: galaxy/tailscale

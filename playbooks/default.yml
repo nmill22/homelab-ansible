@@ -1,0 +1,144 @@
+- name: set up connection before gathering facts
+  hosts: all
+  gather_facts: no
+  roles:
+    - ansible/setup/connection
+  tags:
+    - always
+
+- name: connect and gather facts
+  hosts: all
+  tasks:
+    - name: node summary
+      debug:
+        msg: >-
+          {{ ansible_all_ipv4_addresses | join(' ') }},
+          {{ ansible_distribution }} {{ ansible_distribution_version }},
+          {{ ansible_processor_vcpus }} CPU(s),
+          {{ ansible_memtotal_mb }} MB memory
+  tags:
+    - always
+    - connect
+
+- name: bootstrap connection credentials
+  hosts: all
+  roles:
+    - role: ansible/setup/bootstrap
+      when: bootstrap|default(false)|bool
+  tags:
+    - bootstrap
+
+- name: bootstrap tailscale
+  hosts: tailscale
+  roles:
+    - role: galaxy/tailscale
+      when: bootstrap|default(false)|bool
+  tags:
+    - bootstrap
+
+- name: set up ansible environment on remote
+  hosts: all
+  roles:
+    - ansible/remote
+  tags:
+    - always
+    - base-setup  # not part of base tag since really a setup task but needs apt mirrors, etc. from previous base plays
+    - ansible-remote
+
+- name: common
+  hosts: all
+  roles:
+    - common
+  tags:
+    - always
+    - base
+    - common
+
+- hosts: raspberry-pi
+  roles:
+    - role: generic/raspberry-pi
+  tags:
+    - raspberry-pi
+
+- hosts: tailscale
+  roles:
+    - role: galaxy/tailscale
+      tailscale_up_skip: yes # Only authenticate tailscale during bootstrapping
+  tasks:
+    - name: get tailscale ip addresses
+      command: tailscale ip
+      changed_when: false
+      register: tailscale_ip_result
+    - name: set tailscale ip address vars
+      set_fact:
+        tailscale_ip4_address: "{{ tailscale_ip_result.stdout_lines[0] }}"
+        tailscale_ip6_address: "{{ tailscale_ip_result.stdout_lines[1] }}"
+    - name: add Cloudflare DNS record for tailscale ipv4 address
+      community.general.cloudflare_dns:
+        zone: "{{ vault_cloudflare_zone }}"
+        account_email: "{{ vault_cloudflare_email }}"
+        account_api_token: "{{ vault_cloudflare_api_key }}"
+        type: "A"
+        record: "{{ inventory_hostname }}.ts"
+        value: "{{ tailscale_ip4_address }}"
+        ttl: 1
+        proxied: no
+        solo: yes
+      when: create_cloudflare_ipv4_dns_record|default(false)
+    - name: add Cloudflare DNS record for tailscale ipv6 address
+      community.general.cloudflare_dns:
+        zone: "{{ vault_cloudflare_zone }}"
+        account_email: "{{ vault_cloudflare_email }}"
+        account_api_token: "{{ vault_cloudflare_api_key }}"
+        type: "AAAA"
+        record: "{{ inventory_hostname }}.ts"
+        value: "{{ tailscale_ip6_address }}"
+        ttl: 1
+        proxied: no
+        solo: yes
+      when: create_cloudflare_ipv6_dns_record|default(false)
+  tags:
+    - tailscale
+
+- hosts: project-files
+  roles:
+    - role: generic/project-files
+  tags:
+    - project-files
+
+- hosts: docker
+  roles:
+    - role: galaxy/docker
+      # Necessary so telegraf can read from the socket
+      docker_users: "{{ additional_docker_users|default([]) + ['telegraf'] }}"
+      tags:
+        - docker-daemon
+    - role: generic/docker-stats
+      docker_stats_state: "{{ 'present' if docker_service_enabled else 'absent' }}"
+      tags:
+        - docker-stats
+  tags:
+    - docker
+
+- hosts: docker:docker_compose
+  tasks:
+    - name: create docker containers
+      when: docker_compose_definition is defined
+      community.general.docker_compose:
+        state: "{{ docker_compose_state|default('present') }}"
+        remove_images: all
+        remove_volumes: yes
+        remove_orphans: yes
+        project_name: "{{ docker_compose_project_name|default(inventory_hostname) }}"
+        definition: "{{ docker_compose_definition }}"
+        pull: yes
+      tags:
+        - docker-compose
+  tags:
+    - docker
+
+- hosts: x11vnc
+  roles:
+    - role: generic/x11vnc
+  tags:
+    - x11vnc
