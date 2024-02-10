@@ -1,0 +1,12 @@
+ansible_ssh_pipelining: true
+
+hub_install_dir: /usr/local/hub
+hub_domain: hub.hohmlabs.dev
+hub_port: 8115
+hub_user: hub
+hub_mode: 0777
+
+# Hub
+
+hub_version: 2.5.450
+hub_webserver: nginx

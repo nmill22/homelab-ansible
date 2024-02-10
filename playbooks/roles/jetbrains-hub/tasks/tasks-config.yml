@@ -1,0 +1,38 @@
+---
+
+- name: "Config | Create user group"
+  become: yes
+  become_user: root
+  group:
+    name: hub
+    state: present
+
+- name: "Config | Add users"
+  become: yes
+  become_user: root
+  user:
+    name: hub
+    shell: /bin/false
+    state: present
+    group: hub
+
+- name: "Config | Create directories"
+  become: yes
+  become_user: root
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ hub_user }}"
+    group: "{{ hub_user }}"
+    mode: 0777
+    recurse: true
+  with_items:
+    - "{{ hub_install_dir }}"
+
+- name: "Config | Include OS-specific tasks for Debian/Ubuntu"
+  include: tasks-config-debian.yml
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: "Config | Include OS-specific tasks for RedHat/CentOS/REHL"
+  include: tasks-config-redhat.yml
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

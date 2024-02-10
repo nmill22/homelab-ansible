@@ -1,0 +1,15 @@
+---
+
+- name: "Hub | Stop service"
+  become: yes
+  become_user: root
+  shell: '/etc/init.d/hub stop'
+  when: '"{{ hub_installed_version.stdout }}" != "{{ hub_version }}"'
+
+- name: "Hub | Uninstall"
+  become: yes
+  become_user: root
+  file:
+    path: "{{ hub_install_dir }}"
+    state: absent
+  when: '"{{ hub_installed_version.stdout }}" != "{{ hub_version }}"'

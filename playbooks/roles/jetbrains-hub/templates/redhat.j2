@@ -1,0 +1,41 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          hub
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Hub
+# Description:       Hub
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+HUB_USER=hub
+HUB_VERSION=$(echo {{ hub_version }} | cut -d. -f3)
+HUB_VERSION=$(echo {{ hub_version }})
+HUB_DIR={{ hub_install_dir }}
+HUB_PATH=$HUB_DIR/bin/hub.sh
+
+case $1 in
+    start)
+        $HUB_PATH start
+        ;;
+    stop)
+        $HUB_PATH stop
+        ;;
+    restart)
+        $HUB_PATH stop
+        $HUB_PATH start
+        ;;
+    status)
+        $HUB_PATH status
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+    ;;
+esac
+exit 0

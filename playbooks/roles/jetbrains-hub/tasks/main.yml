@@ -1,0 +1,28 @@
+---
+
+- name: "Include setup tasks"
+  include: tasks-initial.yml
+
+- name: "Include detection tasks"
+  include: tasks-hub-detect.yml
+
+- name: "Include clean-up tasks"
+  include: tasks-hub-clean.yml
+  when: 'hub_status is defined and "{{ hub_installed_version.stdout }}" != "{{ hub_version }}"'
+
+- name: "Include hub distribution tasks"
+  include: tasks-hub-distribution.yml
+
+- name: "Include config tasks"
+  include: tasks-config.yml
+
+- name: "Include hub service tasks"
+  include: tasks-hub-service.yml
+
+- name: "Hub | Web Service | Restart"
+  become: yes
+  become_user: root
+  service:
+    name: "{{ fubarhouse_webserver }}"
+    state: restarted
+  when: fubarhouse_webserver is defined

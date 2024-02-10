@@ -1,0 +1,31 @@
+---
+
+- name: "Hub | Service | Stop"
+  become: yes
+  become_user: root
+  service:
+    name: hub
+    state: stopped
+
+- name: "Hub | Refresh permissions"
+  become: yes
+  become_user: root
+  file:
+    path: "{{ hub_install_dir }}"
+    state: directory
+    owner: "{{ hub_user }}"
+    group: "{{ hub_user }}"
+    mode: "{{ hub_mode }}"
+    recurse: true
+
+- name: "Hub | Service | Configure port"
+  become: yes
+  become_user: "{{ hub_user }}"
+  shell: "{{ hub_install_dir }}/bin/hub.sh configure --listen-port={{ hub_port }} --base-url=http://localhost:{{ hub_port }}/"
+
+- name: "Hub | Service | Start"
+  become: yes
+  become_user: root
+  service:
+    name: hub
+    state: started

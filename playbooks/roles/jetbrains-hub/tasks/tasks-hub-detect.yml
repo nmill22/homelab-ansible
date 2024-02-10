@@ -1,0 +1,16 @@
+---
+
+- name: "Hub | Looking for initialisation script"
+  stat:
+    path: /etc/init.d/hub
+  register: init_file
+
+- name: "Hub | Detect installation"
+  shell:  sudo /etc/init.d/hub status
+  register: hub_status
+  when: '"{{ init_file.stat.exists }}" == true'
+
+- name: "Hub | Get version"
+  shell:  sudo /etc/init.d/hub version
+  register: hub_installed_version
+  when: '"{{ init_file.stat.exists }}" == true'

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+HUB_USER=hub
+HUB_VERSION=$(echo {{ hub_version }} | cut -d. -f3)
+HUB_VERSION=$(echo {{ hub_version }})
+HUB_DIR={{ hub_install_dir }}
+HUB_PATH=$HUB_DIR/bin/hub.sh
+
+case $1 in
+  start)
+    echo "Starting Hub"
+    start-stop-daemon --start -c hub --exec $HUB_PATH start
+    ;;
+  stop)
+    echo "Stopping Hub"
+    start-stop-daemon --start -c hub --exec $HUB_PATH stop
+    ;;
+  restart)
+    echo "Restarting Hub"
+    start-stop-daemon --start  -c hub --exec $HUB_PATH stop
+    start-stop-daemon --start  -c hub --exec $HUB_PATH start
+    ;;
+  status)
+    start-stop-daemon --start  -c hub --exec $HUB_PATH status
+    ;;
+  *)
+    echo "Usage: /etc/init.d/hub {start|stop|restart|status}"
+    exit 1
+    ;;
+esac
+
+exit 0

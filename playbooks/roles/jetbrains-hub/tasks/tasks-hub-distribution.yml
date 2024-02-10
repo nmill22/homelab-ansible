@@ -1,0 +1,62 @@
+---
+
+- name: "Hub | Get distribution"
+  become: yes
+  become_user: root
+  get_url:
+    url: "http://download.jetbrains.com/hub/2.5/hub-ring-bundle-{{ hub_version }}.zip"
+    dest: "/tmp/hub-{{ hub_version }}.zip"
+    validate_certs: no
+  tags:
+  - hub
+
+- name: "Hub | Ensure directory is writable"
+  become: yes
+  become_user: root
+  file:
+    path: "{{ hub_install_dir }}"
+    state: directory
+    owner: "{{ fubarhouse_user }}"
+    group: "{{ fubarhouse_user }}"
+    mode: 0755
+    recurse: true
+  tags:
+  - hub
+
+- name: "Hub | Unpack distribution"
+  become: yes
+  become_user: root
+  unarchive:
+    src: "/tmp/hub-{{ hub_version }}.zip"
+    dest: "/tmp/"
+    copy: "no"
+  tags:
+  - hub
+
+- name: "Hub | Moving to installation directory"
+  become: yes
+  become_user: root
+  shell: "cp -rf /tmp/hub-ring-bundle-{{ hub_version }}/* {{ hub_install_dir }}"
+  when: ansible_ssh_user is defined
+
+- name: "Hub | Moving to installation directory"
+  synchronize:
+    src: "/tmp/hub-ring-bundle-{{ hub_version }}/"
+    dest: "{{ hub_install_dir }}"
+    delete: yes
+    recursive: yes
+  when: ansible_ssh_user is undefined
+
+- name: "Hub | Remove temporary data"
+  become: yes
+  become_user: root
+  file:
+    path: "/tmp/hub-ring-bundle-{{ hub_version }}"
+    state: absent
+
+- name: "Hub | Specify variable for specific version"
+  shell: "echo {{ hub_version }} | cut -d. -f3"
+  register: hub_version_stripped
+  failed_when: false
+  tags:
+  - hub
