@@ -1,0 +1,28 @@
+ansible_host: "{{ vault_ansible_host }}"
+ansible_port: "{{ vault_ansible_port }}"
+
+authorized_keys:
+  - key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG+HJNKqbjQINHhFxcFL0ygmiX1JE6ekIIZY10d2Vef6 hohmlabs
+    user: pi
+    state: present
+  - key: ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFo5wYjyjI61lhZpuxJHvAZXgAM0tmiMEGs8d7jN0YZp/hKI7QCuSxv7C/D/JcZuLcO8PiUfYl+Z1h9xud5L/No= hohmlabs
+    user: pi
+    state: present
+  - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDqLQMLao9PHxhkrcyKRbOluhZEbVs1ZTF+0JChwWRtDuHml5ZaurV696G9n+A+v62FwB4nGuyWt6nJ2m2B3XD4S7OnND+otLlRnygMIHFW/05KjcLzHOJsqB0yR/9cFrizZyX7NW8XRyRtfxfxW0q11dM4RHrq3uyfsOsEGLX0Z0dbyG8uZGGvfuAnb/kqZk8AVdBKI6opLTjD3JXwVYPzkzLVif8Vw9Rcy2t9zqkYUH5nbijOh1mZkuAlXTgq3Ol9F20sVyV96eXrNqJTfC5P56sjGQWc122TWvyRWZYkOX90TL2k74We3etzKom4Uc31f/aVmqy9e+TXFcXxII73KSVYSEjX3LHlPZkMcTNMf0ovKiCESKcuqO+neriF1rpv+cLHth/8nxbR8ZJfLOIdrO0HfTnU63/9XDVkQUIpJkQYRRwgaTdI5qUUuhTqK9kBzwTsyuH494LYCWakpuYg9G3e1GYORplJYmDP47ZJzfLXrtBUQGJk2zrR3unkpMs17JrUE1r8/Kh8Fgbzn6x8+CLJhdSQCTzU0flHPT8MUrJVnmf8KSEQau2P5q6QXFJ1Ekz+pbkU9huNR+mtGpc4bRSwDz66reM4r2kp01zqJCjh26cq6dtjW8YBrCs+uJTueurWAFdC+wBx2p+hVRhGYp/3fDghNrxI55ADsT4TYw== hohmlabs
+    user: pi
+    state: present
+
+additional_docker_users:
+  - ubuntu
+docker_compose_definition: "{{ vault_docker_compose_definition }}"
+
+lightdm_autologin_user: ubuntu
+lightdm_xorg_create_video_dummy: yes
+
+sudoers:
+  - user: ubuntu
+    passwordless: true
+
+project_files:
+  - src: "vault/{{ inventory_hostname }}/var/docker/"
+    dest: /var/docker/

@@ -1,0 +1,12 @@
+#    nginx:
+#      image: nginx:latest
+#      labels:
+#        traefik.enable: 'true'
+#        traefik.http.routers.nginx.rule: Host(`portfolio.hohmlabs.dev`)
+#        traefik.http.services.nginx.loadBalancer.server.port: '80'
+#      networks:
+#        - apps
+#      volumes:
+#        - /var/docker/usr/share/nginx/html:/usr/share/nginx/html:ro
+#      environment:
+#        TZ: America/New_York

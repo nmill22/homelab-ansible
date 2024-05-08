@@ -17,7 +17,7 @@
       - setuptools{{ setuptools_version_spec }}
       - pip{{ pip_version_spec }}
     executable: pip3
-    extra_args: "{{ '' if pip_no_disable_pip_version_check is changed else '--disable-pip-version-check' }}"
+    extra_args: "{{ '' if pip_no_disable_pip_version_check is changed else '--disable-pip-version-check' }} --break-system-packages"
     state: latest
   environment:
     SETUPTOOLS_USE_DISTUTILS: stdlib
@@ -26,7 +26,7 @@
   pip:
     name: virtualenv{{ virtualenv_version_spec }}
     executable: pip3
-    extra_args: --disable-pip-version-check
+    extra_args: "--disable-pip-version-check --break-system-packages"
     state: latest
   environment:
     SETUPTOOLS_USE_DISTUTILS: stdlib
