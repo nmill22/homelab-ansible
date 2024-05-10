@@ -1,22 +1,21 @@
 [raspberry-pi]
-pi2
-pi3
+piweb
+pigame
 
 [x11vnc]
-pi2
-pi3
+
 
 [tailscale]
-pi2
-pi3
+piweb
+pigame
 
 [tailscale:vars]
 create_cloudflare_ipv4_dns_record=yes
 
 [docker]
-pi2
-pi3
+piweb
+pigame
 
 [project-files]
-pi2
-pi3
+piweb
+pigame
